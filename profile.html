@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<h2>Your Profile</h2>
+<h3>Borrowed Books</h3>
+{% if borrow_records %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Borrow Date</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for record in borrow_records %}
+        <tr>
+            <td>{{ record.book.title }}</td>
+            <td>{{ record.book.author }}</td>
+            <td>{{ record.borrow_date.strftime('%Y-%m-%d') }}</td>
+            <td>{% if record.is_returned %}Returned{% else %}Borrowed{% endif %}</td>
+            <td>
+                {% if not record.is_returned %}
+                <form action="{{ url_for('return_book', record_id=record.id) }}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-warning btn-sm">Return</button>
+                </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>You have no borrowed books.</p>
+{% endif %}
+{% endblock %}
